@@ -18,18 +18,6 @@ const db = mysql.createPool({
   database: process.env.DB_DATABASE,
 });
 
-app.get("/", (req, res) => {
-  const sql = "SELECT * FROM todos.users";
-  db.query(sql, (err, result) => {
-    if (err) {
-      console.log(err);
-      res.status(500).send("Internal Server Error");
-    } else {
-      // console.log(result);
-    }
-  });
-});
-
 app.post("/register", (req, res) => {
   const fName = req.body.f_name;
   const lName = req.body.l_name;
@@ -64,7 +52,7 @@ app.post("/login", (req, res) => {
           const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, {
             expiresIn: "1h",
           });
-          res.json({ token });
+          res.json({ token, email: user.email });
         } else {
           res.status(401).send("Invalid Password");
         }

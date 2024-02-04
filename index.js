@@ -156,6 +156,37 @@ app.get("/get-all", (req, res) => {
   });
 });
 
+// change the done status in the database
+
+app.put("/update/:id", (req, res) => {
+  const id = req.params.id;
+  const sql =
+    "UPDATE todos.todos SET done = CASE WHEN done = 1 THEN 0 ELSE 1 END WHERE id = ?;";
+  db.query(sql, [id], (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(500).send("Internal Server Error");
+    } else {
+      res.send(result);
+    }
+  });
+});
+
+// delete a todo item from the database
+
+app.delete("/delete/:id", (req, res) => {
+  const id = req.params.id;
+  const sql = `DELETE FROM todos.todos WHERE id = ?`;
+  db.query(sql, [id], (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(500).send("Internal Server Error");
+    } else {
+      res.send(result);
+    }
+  });
+});
+
 /**
  * Starts the Express server listening on the given port.
  * Logs a message when the server starts.
